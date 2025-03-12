@@ -73,13 +73,16 @@ class LS_HumanPartsUltra:
         """
         import onnxruntime as ort
 
-        model = ort.InferenceSession(model_path, providers=['TensorrtExecutionProvider', 'CUDAExecutionProvider', 'CPUExecutionProvider'])
+        # 只在第一次调用时初始化模型，之后重复使用
+        if self.model is None:
+            log(f"{self.NODE_NAME} 初始化模型...", message_type='info')
+            self.model = ort.InferenceSession(model_path, providers=['TensorrtExecutionProvider', 'CUDAExecutionProvider', 'CPUExecutionProvider'])
         ret_images = []
         ret_masks = []
         for img in image:
             orig_image = tensor2pil(img).convert('RGB')
 
-            human_parts_mask, _ = self.get_mask(orig_image, model=model, rotation=0, background=False,
+            human_parts_mask, _ = self.get_mask(orig_image, model=self.model, rotation=0, background=False,
                                           face=face, hair=hair, glasses=glasses,
                                           top_clothes=top_clothes, bottom_clothes=bottom_clothes,
                                           torso_skin=torso_skin, left_arm=left_arm, right_arm=right_arm,
