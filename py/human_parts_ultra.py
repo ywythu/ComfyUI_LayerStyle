@@ -25,6 +25,7 @@ class LS_HumanPartsUltra:
 
     def __init__(self):
         self.NODE_NAME = 'HumanPartsUltra'
+        self.model = None
 
     RETURN_TYPES = ("IMAGE", "MASK",)
     RETURN_NAMES = ("image", "mask",)
